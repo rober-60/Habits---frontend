@@ -21,7 +21,7 @@ export async function login(email, password) {
     body,
   });
   if (!res.ok) throw new Error("Login failed");
-  return res.json(); // { access_token, token_type }
+  return res.json();
 }
 
 export async function getHabits(token) {

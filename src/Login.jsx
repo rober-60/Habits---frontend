@@ -39,12 +39,14 @@ export default function Login({ onLogin }) {
         required
       />
       <button type="submit">{isRegistering ? "Register" : "Login"}</button>
-      {error && <p style={{ color: "red" }}>{error}</p>}
-      <p>
-        <button type="button" onClick={() => setIsRegistering(!isRegistering)}>
-          {isRegistering ? "Already have an account? Login" : "No account? Register"}
-        </button>
-      </p>
+      {error && <p className="error-text">{error}</p>}
+      <button
+        type="button"
+        className="link-button"
+        onClick={() => setIsRegistering(!isRegistering)}
+      >
+        {isRegistering ? "Already have an account? Login" : "No account? Register"}
+      </button>
     </form>
   );
 }
