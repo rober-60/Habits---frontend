@@ -45,7 +45,7 @@ export default function Login({ onLogin }) {
         className="link-button"
         onClick={() => setIsRegistering(!isRegistering)}
       >
-        {isRegistering ? "Already have an account? Login" : "No account? Register"}
+        {isRegistering ? "Already have an account? Login" : "Register"}
       </button>
     </form>
   );

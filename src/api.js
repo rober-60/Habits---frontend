@@ -57,3 +57,11 @@ export async function getHabitStats(token, habitId) {
   });
   return res.json();
 }
+
+export async function deleteHabit(token, habitId) {
+    const res = await fetch(`${API_URL}/habits/${habitId}`, {
+    method: "DELETE",
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return res.json();
+}

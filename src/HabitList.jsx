@@ -42,6 +42,7 @@ export default function HabitList({ token }) {
     loadHabits();
   }
 
+
   return (
     <div>
       <h2>Your Habits</h2>
@@ -67,7 +68,7 @@ export default function HabitList({ token }) {
                   🔥 {stats[habit.id].current_streak} | {(stats[habit.id].completion_rate_week * 100).toFixed(0)}%
                 </span>
               )}
-            <button onClick={() => handleDelete(habit.id)}>Delete</button>
+              <button onClick={() => handleDelete(habit.id)}>Delete</button>
             </div>
           </li>
         ))}
