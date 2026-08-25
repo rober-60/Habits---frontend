@@ -59,9 +59,21 @@ export async function getHabitStats(token, habitId) {
 }
 
 export async function deleteHabit(token, habitId) {
-    const res = await fetch(`${API_URL}/habits/${habitId}`, {
+  const res = await fetch(`${API_URL}/habits/${habitId}`, {
     method: "DELETE",
     headers: { Authorization: `Bearer ${token}` },
+  });
+  return res.json();
+}
+
+export async function updateHabit(token, habitId, updates) {
+  const res = await fetch(`${API_URL}/habits/${habitId}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(updates),
   });
   return res.json();
 }
