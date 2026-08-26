@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import { getHabits, createHabit, logHabit, getHabitStats, deleteHabit, updateHabit } from "./api";
+import HeatMap from "./HeatMap";
+import { getHabitHistory } from "./api";
 
 export default function HabitList({ token }) {
   const [habits, setHabits] = useState([]);
@@ -7,6 +9,7 @@ export default function HabitList({ token }) {
   const [stats, setStats] = useState({});
   const [editingHabit, setEditingHabit] = useState(null);
   const [editName, setEditName] = useState("");
+  const [history, setHistory] = useState({});
 
   useEffect(() => {
     loadHabits();
@@ -58,6 +61,21 @@ export default function HabitList({ token }) {
     loadHabits();
   }
 
+  async function loadHabits() {
+    const data = await getHabits(token);
+    setHabits(data);
+
+    const statsEntries = await Promise.all(
+      data.map(async (habit) => [habit.id, await getHabitStats(token, habit.id)])
+    );
+    setStats(Object.fromEntries(statsEntries));
+
+    const historyEntries = await Promise.all(
+      data.map(async (habit) => [habit.id, (await getHabitHistory(token, habit.id)).dates])
+    );
+    setHistory(Object.fromEntries(historyEntries));
+  }
+
   return (
     <div>
       <h2>Your Habits</h2>
@@ -91,6 +109,7 @@ export default function HabitList({ token }) {
               </button>
               <button onClick={() => handleDelete(habit.id)}>Delete</button>
             </div>
+            {history[habit.id] && <HeatMap completedDates={history[habit.id]} />}
           </li>
         ))}
       </ul>

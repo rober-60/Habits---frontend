@@ -77,3 +77,10 @@ export async function updateHabit(token, habitId, updates) {
   });
   return res.json();
 }
+
+export async function getHabitHistory(token, habitId, days = 365) {
+  const res = await fetch(`${API_URL}/habits/${habitId}/history?days=${days}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return res.json();
+}
