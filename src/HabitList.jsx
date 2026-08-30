@@ -8,6 +8,7 @@ export default function HabitList({ token }) {
   const [name, setName] = useState("");
   const [stats, setStats] = useState({});
   const [editingHabit, setEditingHabit] = useState(null);
+  const [deletingHabit, setDeletingHabit] = useState(null);
   const [editName, setEditName] = useState("");
   const [history, setHistory] = useState({});
 
@@ -42,8 +43,14 @@ export default function HabitList({ token }) {
     setStats((prev) => ({ ...prev, [habitId]: s }));
   }
 
-  async function handleDelete(habitId) {
-    await deleteHabit(token, habitId);
+  function handleDeleteClick(habit) {
+    setDeletingHabit(habit);
+  }
+
+  async function confirmDelete() {
+    if (!deletingHabit) return;
+    await deleteHabit(token, deletingHabit.id);
+    setDeletingHabit(null);
     loadHabits();
   }
 
@@ -107,7 +114,7 @@ export default function HabitList({ token }) {
               }}>
                 Edit
               </button>
-              <button onClick={() => handleDelete(habit.id)}>Delete</button>
+              <button onClick={() => handleDeleteClick(habit)}>Delete</button>
             </div>
             {history[habit.id] && <HeatMap completedDates={history[habit.id]} />}
           </li>
@@ -115,28 +122,41 @@ export default function HabitList({ token }) {
       </ul>
 
       {editingHabit && (
-        <div style={{ marginTop: "20px" }}>
-          <h2>Edit Habit</h2>
-          <form 
-            className="add-habit-form" 
-            onSubmit={handleSaveEdit}
-            style={{ display: "flex", flexDirection: "column", gap: "10px", alignItems: "flex-start" }}
-          >
-            <input
-              placeholder="Edit habit name"
-              value={editName}
-              onChange={(e) => setEditName(e.target.value)}
-              style={{ width: "100%", maxWidth: "300px" }}
-            />
-            
-            <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
-              <button type="button" onClick={() => changeFrequency(editingHabit)}>
-                Switch to {editingHabit.frequency === "daily" ? "weekly" : "daily"}
-              </button>
-              <button type="submit">Save</button>
+        <div className="modal-overlay" onClick={() => setEditingHabit(null)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <h2>Edit Habit</h2>
+            <form
+              className="add-habit-form"
+              onSubmit={handleSaveEdit}
+              style={{ display: "flex", flexDirection: "column", gap: "10px", alignItems: "stretch" }}
+            >
+              <input
+                placeholder="Edit habit name"
+                value={editName}
+                onChange={(e) => setEditName(e.target.value)}
+              />
+              <div className="modal-actions">
+                <button type="button" onClick={() => changeFrequency(editingHabit)}>
+                  Switch to {editingHabit.frequency === "daily" ? "weekly" : "daily"}
+                </button>
+                <button type="submit">Save</button>
+                <button type="button" onClick={() => setEditingHabit(null)}>Cancel</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {deletingHabit && (
+        <div className="modal-overlay" onClick={() => setDeletingHabit(null)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <h2>Delete Habit</h2>
+            <p>Do you realy want to delete {deletingHabit.name}?</p>
+            <div className="modal-actions">
+              <button type="button" onClick={confirmDelete}>Delete</button>
               <button type="button" onClick={() => setEditingHabit(null)}>Cancel</button>
             </div>
-          </form>
+          </div>
         </div>
       )}
     </div>
